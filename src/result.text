@@ -1,0 +1,85 @@
+ruzen 9 7950X @ 4.5GHz
+
+
+
+
+---day 3---
+
+
+両方縦カラム制において、N=1のとき1threadのdata parallelより２倍程度であるが高速で、
+N=manyの時、data parallelと同等の性能を出せる。よし、これでいこう。
+N = 1, M = 100000, P = 30000
+build ramdom matrix: 1ms97µs500ns
+column parallel: 246ms639µs
+data parallel: 621ms21µs500ns
+both column style jki: 230ms653µs500ns
+
+N = 20000, M = 1000, P = 30000
+build ramdom matrix: 93ms347µs
+column parallel: 37s388ms501µs300ns
+data parallel: 7s235ms666µs500ns
+both column style jki: 7s841ms679µs200ns
+
+----day 2---
+やっぱfor内でスレッド発行は遅いか
+N = 1ならまあ同じくらいってことはforが原因だな
+{
+    これだけ接待設定にしてようやく同じ時間か。しかも転置する時間を含んでいない。
+    N = 1, M = 100000, P = 30000
+    column parallel: 399ms212µs900ns
+    data parallel: 470ms545µs800ns
+
+    N = 1, M = 10000, P = 10000
+    column parallel: 19ms544µs200ns
+    data parallel: 18ms22µs600ns
+
+    N = 10000, M = 10000, P = 10000
+    column parallel: 1m11s672ms885µs700ns
+    data parallel: 12s809ms797µs700ns
+}
+
+N = 10000, M = 10000, P = 10000
+build ramdom matrix: 462ms524µs700ns
+data parallel: 15s797ms722µs900ns
+vector component wise parallel: 2m49s225ms849µs700ns
+
+
+N = 1, M = 100000, P = 100000
+build ramdom matrix: 807µs100ns
+data parallel: 2s440ms964µs100ns
+
+
+下手にSIMDを強制すると遅くなる
+N = 10000, M = 1000, P = 10000
+build ramdom matrix: 44ms901µs500ns
+data parallel: 1s613ms704µs
+simd ikj: 4s772ms803µs500ns
+
+---day 1-----
+N = 1000, M = 1000, P = 1000
+build ramdom matrix: 4ms951µs600ns
+normal: 666ms197µs900ns
+ikj: 77ms792µs700ns
+data parallel: 39ms620µs900ns
+vector component wise parallel: 314ms159µs
+simd: 1s1ms552µs400ns
+
+
+N = 10000, M = 1000, P = 10000
+build ramdom matrix: 45ms289µs100ns
+normal: 1m22s849ms275µs800ns
+ikj: 16s919ms786µs
+data parallel: 1s285ms145µs300ns
+vector component wise parallel: 4s412ms586µs
+simd: 1m40s611ms966µs500ns
+
+
+
+vector component wiseの評価用。ikjデータパラレルのほうが普通にはやい
+N = 1, M = 100000, P = 10000
+build ramdom matrix: 815µs700ns
+normal: 3s163ms793µs200ns
+ikj: 166ms317µs700ns
+data parallel: 161ms249µs300ns(並列数は１で実質ikjと同じ)
+vector component wise parallel: 1s161ms5µs800ns
+simd: 1s57ms647µs200ns
